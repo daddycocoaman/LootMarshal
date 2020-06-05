@@ -1,4 +1,5 @@
 from uuid import UUID
+from fastapi import HTTPException
 
 from azure.storage.blob.aio import BlobServiceClient
 from azure.identity.aio import ClientSecretCredential
@@ -44,7 +45,8 @@ class AzureHandler(Handler):
         try:
             return await self.secretsclient.get_secret(name)
         except Exception as e:
-            return str(e)
+            raise HTTPException(status_code=404, detail=str(e))
+
     
     async def add_secret(self, name, value, content_type):
         try:

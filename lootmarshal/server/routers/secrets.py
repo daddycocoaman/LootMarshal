@@ -13,6 +13,8 @@ async def create_secret(secret: SecretModel):
 @router.get("/{name}", summary="Gets a secret")
 async def get_secret(name: str):
     handler = HC.handler
-    msg = await handler.get_secret(name)
-    return {'msg': msg}
-
+    try:
+        msg = await handler.get_secret(name)
+        return {'msg': msg}
+    except Exception as e:
+        raise e

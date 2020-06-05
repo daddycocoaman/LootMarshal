@@ -12,7 +12,7 @@ def get(name: str):
     Gets a secret.
     """
     resp = lmcs.request("GET", f"secret/{name}")
-    print_cli_response(resp)
+    print_cli_response(resp, value="_value")
 
 @secret_app.command(name="set")
 def set_secret(name: str, value: str, content_type: str):

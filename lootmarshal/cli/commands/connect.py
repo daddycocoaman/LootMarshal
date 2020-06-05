@@ -12,4 +12,4 @@ def azure(ctx: typer.Context):
     Connects to Azure.
     """
     resp = lmcs.request("GET", "connect/azure")
-    print_cli_response(resp)
+    print_cli_response(resp, status=True)
