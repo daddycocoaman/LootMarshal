@@ -22,9 +22,9 @@ def print_cli_response(resp: Response, value: str = None, status: bool = False) 
         mark = "[✓] " if status else ""
         msg = resp.json()['msg']
         if status:
-            typer.secho(f"{mark}{msg}", fg="green")
+            typer.secho(f"{mark}{msg}\n", fg="green")
         else:
-            output = msg.get(value, msg)
-            typer.secho(f"{mark}{output}", fg="green")
+            output = msg.get(value, msg) if value else msg
+            typer.secho(f"{mark}{output}\n", fg="green")
     else:
-        typer.secho(f"[✗] {resp.json()['detail']}", fg="red")
+        typer.secho(f"[✗] {resp.json()['detail']}\n", fg="red")

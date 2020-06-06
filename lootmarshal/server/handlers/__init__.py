@@ -35,7 +35,19 @@ class Handler(ABC):
         pass
 
     @abstractmethod
-    async def get_secret(self, name):
+    async def read_secret(self, name):
         """Returns a secret from the handler's secretclient.
+        Return Exception if unsuccessful."""
+        pass
+
+    @abstractmethod
+    async def write_secret(self, name, value, content_type):
+        """Writes a secret to the handler's secretclient.
+        Return Exception if unsuccessful."""
+        pass
+
+    @abstractmethod
+    async def list_secrets(self):
+        """Returns all secrets from the handler's secretclient.
         Return Exception if unsuccessful."""
         pass
