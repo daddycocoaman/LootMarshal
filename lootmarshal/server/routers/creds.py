@@ -24,6 +24,11 @@ async def checkHandler(store: bool = False):
 async def parse_lsass(
     dump: UploadFile = File(...), store: bool = Depends(checkHandler)
 ):
+    """
+    Runs pypykatz on an lsass minidump. Returns credentials.
+
+    Set store to True to save credentials via secretshandler.
+    """
     cred_types = [
         "credman_creds",
         "dpapi_creds",
