@@ -55,6 +55,6 @@ async def parse_lsass(
                 if v[cred]:
                     domain = v["domainname"].replace(" ", "-")
                     username = v["username"].rstrip("$").replace(" ", "-")
-                    name = f'{domain}--{username}--{v["luid"]}'
+                    name = f'{domain}--{username}--{v["luid"]}--{cred.split("_")[0]}'
                     await HC.handler.write_secret(name, v[cred], cred)
     return {"msg": msg}
