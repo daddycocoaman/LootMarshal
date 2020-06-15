@@ -1,3 +1,1 @@
-TAGS = {
-    "username": "password"
-}
+TAGS = ["tenant", "credential"]

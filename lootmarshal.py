@@ -1,5 +1,6 @@
 import typer
 import sys
+
 sys.path.append(".")
 
 from lootmarshal.cli.main import cli

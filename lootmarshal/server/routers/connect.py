@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from ..handlers import HandlerContext as HC
+from ..handlers.handlercontext import HandlerContext as HC
 
 router = APIRouter()
 
@@ -7,7 +7,7 @@ router = APIRouter()
 @router.get("/azure", summary="Initializes Azure handler")
 async def connect_azure():
     try:
-        msg = HC.setContext("Azure")
+        msg = HC.setContext("azure")
         handler = HC.handler
         if await handler.validate():
             return {"msg": msg}

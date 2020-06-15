@@ -8,7 +8,8 @@ from azure.keyvault.secrets.aio import SecretClient
 from pydantic import BaseSettings
 from pydantic.networks import HttpUrl
 
-from . import Handler
+from .handlercontext import Handler
+
 
 class AzureHandler(Handler):
     class Settings(BaseSettings):
@@ -27,9 +28,9 @@ class AzureHandler(Handler):
         )
         # Create Blob and KeyVault Secret Clients
         self.storeclient = BlobServiceClient(
-            self.settings.storage_blob_url, self.credential)
-        self.secretsclient = SecretClient(
-            self.settings.keyvault_url, self.credential)
+            self.settings.storage_blob_url, self.credential
+        )
+        self.secretsclient = SecretClient(self.settings.keyvault_url, self.credential)
 
     async def validate(self) -> bool:
         try:
@@ -48,11 +49,11 @@ class AzureHandler(Handler):
         except Exception as e:
             raise HTTPException(status_code=404, detail=str(e))
 
-    
     async def write_secret(self, name, value, content_type):
         try:
-            return await self.secretsclient.write_secret(name, value, 
-                                                       content_type=content_type)
+            return await self.secretsclient.set_secret(
+                name, value, content_type=content_type
+            )
         except Exception as e:
             raise HTTPException(status_code=404, detail=str(e))
 
@@ -61,11 +62,12 @@ class AzureHandler(Handler):
             secret_list = []
             async for props in self.secretsclient.list_properties_of_secrets():
                 secret = await self.secretsclient.get_secret(props.name)
-                formatted = {'name': secret.name,
-                             'value': secret.value,
-                             'content_type': secret.properties.content_type}
+                formatted = {
+                    "name": secret.name,
+                    "value": secret.value,
+                    "content_type": secret.properties.content_type,
+                }
                 secret_list.append(formatted)
-            print(secret_list)
             return json.dumps(secret_list, indent=4)
         except Exception as e:
             raise HTTPException(status_code=404, detail=str(e))

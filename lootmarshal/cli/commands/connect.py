@@ -6,6 +6,7 @@ from ..utils import print_cli_response
 
 connect_app = LootMarshalTyper(help="Connects to a specified handler")
 
+
 @connect_app.command()
 def azure(ctx: typer.Context):
     """

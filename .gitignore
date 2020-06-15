@@ -30,7 +30,7 @@ languageServer.*/**
 bin/**
 obj/**
 .pytest_cache
-tmp/**
+tmp/
 .python-version
 .vscode/
 test-results.xml

@@ -7,7 +7,6 @@ from ..settings import LMSettings
 
 
 class LootMarshalCliSession(requests.Session):
-    
     def __init__(self) -> None:
         scheme = "https://" if LMSettings.ssl else "http://"
         url = LMSettings.host
@@ -15,6 +14,8 @@ class LootMarshalCliSession(requests.Session):
         self.base_url = f"{scheme}{url}:{port}"
         super().__init__()
 
-    def request(self, method: str, url: Union[str, bytes, Text], *args, **kwargs) -> Response:
+    def request(
+        self, method: str, url: Union[str, bytes, Text], *args, **kwargs
+    ) -> Response:
         url = urljoin(self.base_url, url)
         return super().request(method, url, *args, **kwargs)

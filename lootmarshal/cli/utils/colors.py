@@ -17,10 +17,11 @@ class CustomHelpColorsCommand(HelpColorsCommand):
         self.help_headers_color = "blue"
         self.help_options_color = "yellow"
 
+
 def print_cli_response(resp: Response, value: str = None, status: bool = False) -> None:
     if 200 <= resp.status_code < 300:
         mark = "[✓] " if status else ""
-        msg = resp.json()['msg']
+        msg = resp.json()["msg"]
         if status:
             typer.secho(f"{mark}{msg}\n", fg="green")
         else:
@@ -28,3 +29,7 @@ def print_cli_response(resp: Response, value: str = None, status: bool = False) 
             typer.secho(f"{mark}{output}\n", fg="green")
     else:
         typer.secho(f"[✗] {resp.json()['detail']}\n", fg="red")
+
+
+def print_bad(msg):
+    typer.secho(f"[✗] {msg}\n", fg="red")
