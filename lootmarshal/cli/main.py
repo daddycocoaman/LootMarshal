@@ -1,5 +1,5 @@
 import uvicorn
-
+from pathlib import Path
 from ..settings import LMSettings
 from .commands import *
 from .loottyper import LootMarshalTyper
@@ -21,4 +21,6 @@ def server():
         reload=LMSettings.debug,
         host=str(LMSettings.host),
         port=LMSettings.port,
+        ssl_keyfile=LMSettings.ssl_keyfile if LMSettings.ssl else None,
+        ssl_certfile=LMSettings.ssl_certfile if LMSettings.ssl else None,
     )

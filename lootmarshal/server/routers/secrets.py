@@ -8,7 +8,9 @@ router = APIRouter()
 @router.put("", summary="Stores a secret")
 async def write_secret(secret: SecretModel):
     handler = HC.handler
-    msg = await handler.write_secret(secret.name, secret.value, secret.content_type)
+    msg = await handler.write_secret(
+        secret.name, secret.value, secret.content_type, secret.tags
+    )
     return {"msg": msg}
 
 

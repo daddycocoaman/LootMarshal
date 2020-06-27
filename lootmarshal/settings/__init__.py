@@ -4,7 +4,7 @@ from .tags import TAGS
 from dotenv import load_dotenv
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 settings_path = Path(__file__).parent
 if settings_path.joinpath("dev.env").exists():

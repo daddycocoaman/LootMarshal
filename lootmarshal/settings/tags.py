@@ -1,1 +1,6 @@
-TAGS = ["tenant", "credential"]
+TAGS = [
+    "domain",
+    "hostname",
+    "tenant",
+    "username",
+]

@@ -13,7 +13,7 @@ $ lootmarshal [OPTIONS] COMMAND [ARGS]...
 **Commands**:
 
 * `connect`: Connects to a specified handler
-* `creds`: Interact with creds
+* `creds`: Run credential modules
 * `secret`: Interact with secrets
 * `server`: Starts the LootMarshal server
 
@@ -51,7 +51,7 @@ $ lootmarshal connect azure [OPTIONS]
 
 ## `lootmarshal creds`
 
-Interact with creds
+Run credential modules
 
 **Usage**:
 
@@ -65,7 +65,25 @@ $ lootmarshal creds [OPTIONS] COMMAND [ARGS]...
 
 **Commands**:
 
+* `binparse`: Parses binary files for interesting strings...
 * `lsass`: Parses lsass dump for creds.
+
+### `lootmarshal creds binparse`
+
+Parses binary files for interesting strings and creds. 
+
+**Usage**:
+
+```console
+$ lootmarshal creds binparse [OPTIONS]
+```
+
+**Options**:
+
+* `-f `: Path to file  [required]
+* `-l `: Min length of strings to parse  [default: 32]
+* `-s`: Save creds to secretclient
+* `--help`: Show this message and exit.
 
 ### `lootmarshal creds lsass`
 
@@ -133,7 +151,7 @@ $ lootmarshal secret list [OPTIONS]
 
 ### `lootmarshal secret set`
 
-Sets a secret.
+Sets a secret. Tag key/value must be alphanumeric (underscores are allowed).
 
 **Usage**:
 
@@ -146,6 +164,7 @@ $ lootmarshal secret set [OPTIONS]
 * `-n `: Name of the secret  [required]
 * `-v `: Value of the secret  [required]
 * `-c `: Content type of the secret  [required]
+* `-t `: Comma-separated tag metadata
 * `--help`: Show this message and exit.
 
 ## `lootmarshal server`

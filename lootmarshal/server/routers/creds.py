@@ -7,6 +7,7 @@ from pypykatz.commons.common import UniversalEncoder
 from pypykatz.pypykatz import pypykatz
 
 from ..handlers.handlercontext import HandlerContext as HC
+from ..misc.credparser import CredParser
 
 router = APIRouter()
 
@@ -22,7 +23,7 @@ async def checkHandler(store: bool = False):
 
 @router.post("/lsass", summary="Runs pypykatz on lsass dump.")
 async def parse_lsass(
-    dump: UploadFile = File(...), store: bool = Depends(checkHandler)
+    upload_file: UploadFile = File(...), store: bool = Depends(checkHandler)
 ):
     """
     Runs pypykatz on an lsass minidump. Returns credentials.
@@ -40,7 +41,7 @@ async def parse_lsass(
         "wdigest_creds",
     ]
     try:
-        creds = pypykatz.parse_minidump_bytes(dump.file.read())
+        creds = pypykatz.parse_minidump_bytes(upload_file.file.read())
         msg = json.dumps(creds, cls=UniversalEncoder, indent=4, sort_keys=True)
     except Exception as e:
         msg = f"{type(e).__name__}: {e.args}"
@@ -58,3 +59,12 @@ async def parse_lsass(
                     name = f'{domain}--{username}--{v["luid"]}--{cred.split("_")[0]}'
                     await HC.handler.write_secret(name, v[cred], cred)
     return {"msg": msg}
+    
+@router.post("/binparse", summary="Parses binary data for credentials")
+async def parse_bin(
+    upload_file: UploadFile = File(...),
+    min_length: int = 32,
+    store: bool = Depends(checkHandler),
+):
+    results = CredParser.parse_bin(upload_file.file.read(), min_length)
+    return {"msg": results}

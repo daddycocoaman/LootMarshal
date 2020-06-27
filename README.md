@@ -67,14 +67,15 @@ The documentation for the LootMarshal CLI can be found [here](docs/cli.md)
 
 * [FastAPI](https://fastapi.tiangolo.com/) - The web framework used
 * [Typer](https://typer.tiangolo.com/) - The CLI Framework used
+* [Pypykatz](https://github.com/skelsec/pypykatz) - Used for credential parsing
+* [Azure SDK](https://azure.github.io/azure-sdk/releases/latest/python.html) - Azure libraries
 
 ## Future development
-**Plan: (6/28)**
+**Plan: (7/12)**
 
-- Implement Azure Storage
-- Implement SSL
-- Add additional credential parsing features
-- Add tagging features for secrets
+- Revamp how storage is handled for files
+- Implement server logging
+- Implement search features
 
 ## Notes
 

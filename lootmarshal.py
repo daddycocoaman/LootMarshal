@@ -1,4 +1,3 @@
-import typer
 import sys
 
 sys.path.append(".")

@@ -7,11 +7,7 @@ from .handlers.handlercontext import HandlerContext as HC
 from .routers import connect, secrets, misc, creds
 
 
-app = FastAPI(
-    title="LootMarshal",
-    description="Loot organizer",
-    version=__version__
-)
+app = FastAPI(title="LootMarshal", description="Loot organizer", version=__version__)
 app.include_router(connect.router, prefix="/connect", tags=["connect"])
 app.include_router(
     secrets.router,

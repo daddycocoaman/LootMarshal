@@ -1,5 +1,5 @@
 from pathlib import Path
-from pydantic import BaseSettings
+from pydantic import BaseSettings, FilePath
 from pydantic.class_validators import validator
 from pydantic.networks import IPvAnyAddress
 
@@ -9,6 +9,8 @@ class LootMarshalSettings(BaseSettings):
     port: int
     debug: bool
     ssl: bool
+    ssl_keyfile: FilePath
+    ssl_certfile: FilePath
     handler: str
 
     @validator("port")
