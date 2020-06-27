@@ -76,6 +76,7 @@ The documentation for the LootMarshal CLI can be found [here](docs/cli.md)
 - Revamp how storage is handled for files
 - Implement server logging
 - Implement search features
+- Generate SSL key and cert through setup
 
 ## Notes
 
