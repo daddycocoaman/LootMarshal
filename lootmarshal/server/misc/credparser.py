@@ -1,4 +1,5 @@
 import re
+from ..logging import log
 
 _CRED_FILTERS = [
     "access_token",
@@ -15,6 +16,7 @@ class CredParser:
     filters = re.compile(f'({"|".join(_CRED_FILTERS)})')
 
     @staticmethod
+    @log()
     def parse_bin(data: bytes, min_length: int):
         found = []
         strings = re.findall(

@@ -1,13 +1,28 @@
-import uvicorn
+import logging
+import sys
+
+from pathlib import Path
 from fastapi import FastAPI, Depends
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 from lootmarshal.settings import __version__, LMSettings
 from .handlers.handlercontext import HandlerContext as HC
 from .routers import connect, secrets, misc, creds
+from .logging import InterceptHandler, format_record, logger
 
 
 app = FastAPI(title="LootMarshal", description="Loot organizer", version=__version__)
+
+# LOGGING SETUP
+logging.getLogger().handlers = [InterceptHandler()]
+logger.configure(
+    handlers=[{"sink": sys.stdout, "level": logging.DEBUG, "format": format_record},
+              {"sink": Path("~/.lootmarshal/lm.log").expanduser(), "level": logging.DEBUG, "format": format_record}],
+    extra={"user": "someone"}
+)
+logging.getLogger("uvicorn.access").handlers = [InterceptHandler()]
+
+# ROUTER SETUP
 app.include_router(connect.router, prefix="/connect", tags=["connect"])
 app.include_router(
     secrets.router,
@@ -18,8 +33,9 @@ app.include_router(
 app.include_router(creds.router, prefix="/creds", tags=["creds"])
 app.include_router(misc.router, tags=["utils"])
 
-HC.setContext(LMSettings.handler)
 
+# CONTEXT SETUP
+HC.setContext(LMSettings.handler)
 
 @app.get("/", include_in_schema=False)
 async def index():
