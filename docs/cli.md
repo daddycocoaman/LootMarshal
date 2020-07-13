@@ -14,7 +14,7 @@ $ lootmarshal [OPTIONS] COMMAND [ARGS]...
 
 * `connect`: Connects to a specified handler
 * `creds`: Run credential modules
-* `secret`: Interact with secrets
+* `secrets`: Interact with secrets
 * `server`: Starts the LootMarshal server
 
 ## `lootmarshal connect`
@@ -82,7 +82,7 @@ $ lootmarshal creds binparse [OPTIONS]
 
 * `-f `: Path to file  [required]
 * `-l `: Min length of strings to parse  [default: 32]
-* `-s`: Save creds to secretclient
+* `-s`: Save creds
 * `--help`: Show this message and exit.
 
 ### `lootmarshal creds lsass`
@@ -98,17 +98,18 @@ $ lootmarshal creds lsass [OPTIONS]
 **Options**:
 
 * `-f `: Path to LSASS dump  [required]
-* `-s`: Save creds to secretclient
+* `-t `: Comma-separated tag metadata
+* `-s`: Save creds
 * `--help`: Show this message and exit.
 
-## `lootmarshal secret`
+## `lootmarshal secrets`
 
 Interact with secrets
 
 **Usage**:
 
 ```console
-$ lootmarshal secret [OPTIONS] COMMAND [ARGS]...
+$ lootmarshal secrets [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Options**:
@@ -119,44 +120,59 @@ $ lootmarshal secret [OPTIONS] COMMAND [ARGS]...
 
 * `get`: Gets a secret.
 * `list`: Lists all secret.
+* `search`: Search secret metadata in index.
 * `set`: Sets a secret.
 
-### `lootmarshal secret get`
+### `lootmarshal secrets get`
 
 Gets a secret.
 
 **Usage**:
 
 ```console
-$ lootmarshal secret get [OPTIONS] NAME
+$ lootmarshal secrets get [OPTIONS] NAME
 ```
 
 **Options**:
 
 * `--help`: Show this message and exit.
 
-### `lootmarshal secret list`
+### `lootmarshal secrets list`
 
 Lists all secret.
 
 **Usage**:
 
 ```console
-$ lootmarshal secret list [OPTIONS]
+$ lootmarshal secrets list [OPTIONS]
 ```
 
 **Options**:
 
 * `--help`: Show this message and exit.
 
-### `lootmarshal secret set`
+### `lootmarshal secrets search`
+
+Search secret metadata in index.
+
+**Usage**:
+
+```console
+$ lootmarshal secrets search [OPTIONS] VALUE
+```
+
+**Options**:
+
+* `--help`: Show this message and exit.
+
+### `lootmarshal secrets set`
 
 Sets a secret. Tag key/value must be alphanumeric (underscores are allowed).
 
 **Usage**:
 
 ```console
-$ lootmarshal secret set [OPTIONS]
+$ lootmarshal secrets set [OPTIONS]
 ```
 
 **Options**:

@@ -1,8 +1,11 @@
-import typer
 from pathlib import Path
+from typing import List
+
+import typer
+
 from .. import LMCliSession as lmcs
 from ..loottyper import LootMarshalTyper
-from ..utils import print_cli_response
+from ..utils import print_cli_response, verify_tags
 
 creds_app = LootMarshalTyper(help="Run credential modules")
 
@@ -18,15 +21,16 @@ def parse_lsass(
         file_okay=True,
         readable=True,
     ),
-    store: bool = typer.Option(
-        False, "-s", metavar="", help="Save creds to secretclient"
+    tags: List[str] = typer.Option(
+        {}, "-t", metavar="", help="Comma-separated tag metadata", callback=verify_tags,
     ),
+    store: bool = typer.Option(False, "-s", metavar="", help="Save creds"),
 ):
     """
     Parses lsass dump for creds. 
     """
     files = {"upload_file": open(path, "rb")}
-    resp = lmcs.request("POST", f"creds/lsass?store={store}", files=files)
+    resp = lmcs.request("POST", f"creds/lsass?store={store}", files=files, json=tags)
     print_cli_response(resp)
 
 
@@ -44,9 +48,7 @@ def parse_bin(
     min_length: int = typer.Option(
         32, "-l", metavar="", help="Min length of strings to parse", show_default=True
     ),
-    store: bool = typer.Option(
-        False, "-s", metavar="", help="Save creds to secretclient"
-    ),
+    store: bool = typer.Option(False, "-s", metavar="", help="Save creds"),
 ):
     """
     Parses binary files for interesting strings and creds. 

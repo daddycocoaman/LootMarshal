@@ -1,5 +1,6 @@
 import typer
-from .utils import CustomHelpColorsGroup, CustomHelpColorsCommand
+
+from .utils import CustomHelpColorsCommand, CustomHelpColorsGroup
 
 
 class LootMarshalTyper(typer.Typer):

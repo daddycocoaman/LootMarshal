@@ -1,10 +1,11 @@
-from pydantic import ValidationError
-from .lmsettings import LootMarshalSettings
-from .tags import TAGS
-from dotenv import load_dotenv
 from pathlib import Path
 
-__version__ = "0.2.0"
+from dotenv import load_dotenv
+from pydantic import ValidationError
+
+from .lmsettings import LootMarshalSettings
+
+__version__ = "0.3.0"
 
 settings_path = Path(__file__).parent
 if settings_path.joinpath("dev.env").exists():

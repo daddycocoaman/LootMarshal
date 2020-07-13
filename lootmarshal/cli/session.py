@@ -1,14 +1,12 @@
 from typing import Text, Union
-import click_spinner
 
+import click_spinner
 import requests
-from requests.models import Response
 from requests.compat import urljoin
-from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
-from requests_toolbelt.multipart import encoder
+from requests.models import Response
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from ..settings import LMSettings
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 

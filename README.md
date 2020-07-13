@@ -14,13 +14,13 @@ LootMarshal is an API server used to manage storage of credentials and files. Pe
 
 ### Installing
 
-LootMarshal is written in a [Poetry](https://python-poetry.org/) environment. However, a `requirements.txt` has also been provided for other virtual environments. It is **HIGHLY RECOMMENDED** that you install this tool in a virtual environment.
+LootMarshal is written in a [Poetry](https://python-poetry.org/) environment. However, poetry is not required to install LootMarshal. You may use pip>=19.0 to install with the `pyproject.toml` file. It is **HIGHLY RECOMMENDED** that you install this tool in a virtual environment.
 
 **Poetry:** `poetry install`
 
-**Pipenv:** `pipenv install -r requirements.txt`
+**Pipenv:** `pipenv install .`
 
-**Pip:** `pip install -r requirements.txt`
+**Pip:** `pip install .`
 
 ## Usage
 
@@ -50,13 +50,13 @@ Before running LootMarshal, you must configure the settings for the server to us
 ### Launch the server
 
 ```
-python lootmarshal.py server
-INFO:     Started server process [19000]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:4008 (Press CTRL+C to quit)
+❯ py .\lm.py server
+INFO:     Uvicorn running on https://127.0.0.1:4008 (Press CTRL+C to quit)
+2020-07-09 02:56:47.217 | INFO     | uvicorn.main:serve:397 - Started server process [13976]
+2020-07-09 02:56:47.232 | INFO     | uvicorn.lifespan.on:startup:22 - Waiting for application startup.
+2020-07-09 02:56:47.232 | INFO     | uvicorn.lifespan.on:startup:34 - Application startup complete.
 ```
-To see what endpoints are currently exposed, you can visit http://127.0.0.1:4008/docs or http://127.0.0.1:4008/redoc to view the API.
+To see what endpoints are currently exposed, you can visit https://127.0.0.1:4008/docs or https://127.0.0.1:4008/redoc to view the API.
 
 ## Using the LootMarshal CLI
 
@@ -70,13 +70,6 @@ The documentation for the LootMarshal CLI can be found [here](docs/cli.md)
 * [Pypykatz](https://github.com/skelsec/pypykatz) - Used for credential parsing
 * [Azure SDK](https://azure.github.io/azure-sdk/releases/latest/python.html) - Azure libraries
 
-## Future development
-**Plan: (7/12)**
-
-- Revamp how storage is handled for files
-- Implement server logging
-- Implement search features
-- Generate SSL key and cert through setup
 
 ## Notes
 

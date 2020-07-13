@@ -8,6 +8,12 @@ from loguru._defaults import LOGURU_FORMAT
 
 # https://github.com/tiangolo/fastapi/issues/1276#issuecomment-615877177
 
+logging.getLogger("azure.core.pipeline.policies.http_logging_policy").setLevel(
+    logging.WARNING
+)
+logging.getLogger("azure.storage.common.storageclient").setLevel(logging.WARNING)
+
+
 class InterceptHandler(logging.Handler):
     """
     Default handler from examples in loguru documentaion.
@@ -20,7 +26,6 @@ class InterceptHandler(logging.Handler):
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
-
         # Find caller from where originated the logged message
         frame, depth = logging.currentframe(), 2
         while frame.f_code.co_filename == logging.__file__:
@@ -56,6 +61,7 @@ def format_record(record: dict) -> str:
     format_string += "{exception}\n"
     return format_string
 
+
 def log(*, level="DEBUG"):
     def wrapper(func):
         name = func.__name__
@@ -67,7 +73,9 @@ def log(*, level="DEBUG"):
             logger_.log(level, "Entering '{}'", name, start)
             result = func(*args, **kwargs)
             end = time.time()
-            logger_.log(level, "Exiting '{}'. Completion time: '{:f}'", name, end - start)
+            logger_.log(
+                level, "Exiting '{}'. Completion time: '{:f}'", name, end - start
+            )
             return result
 
         return wrapped

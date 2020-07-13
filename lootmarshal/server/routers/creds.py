@@ -1,7 +1,6 @@
 import json
-import typer
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, status
 from fastapi.param_functions import Depends
 from pypykatz.commons.common import UniversalEncoder
 from pypykatz.pypykatz import pypykatz
@@ -23,7 +22,10 @@ async def checkHandler(store: bool = False):
 
 @router.post("/lsass", summary="Runs pypykatz on lsass dump.")
 async def parse_lsass(
-    upload_file: UploadFile = File(...), store: bool = Depends(checkHandler)
+    bgtask: BackgroundTasks,
+    upload_file: UploadFile = File(...),
+    tags: dict = {},
+    store: bool = Depends(checkHandler),
 ):
     """
     Runs pypykatz on an lsass minidump. Returns credentials.
@@ -41,7 +43,8 @@ async def parse_lsass(
         "wdigest_creds",
     ]
     try:
-        creds = pypykatz.parse_minidump_bytes(upload_file.file.read())
+        lsass_data = upload_file.file.read()
+        creds = pypykatz.parse_minidump_bytes(lsass_data)
         msg = json.dumps(creds, cls=UniversalEncoder, indent=4, sort_keys=True)
     except Exception as e:
         msg = f"{type(e).__name__}: {e.args}"
@@ -57,14 +60,31 @@ async def parse_lsass(
                     domain = v["domainname"].replace(" ", "-")
                     username = v["username"].rstrip("$").replace(" ", "-")
                     name = f'{domain}--{username}--{v["luid"]}--{cred.split("_")[0]}'
-                    await HC.handler.write_secret(name, v[cred], cred)
+                    await HC.handler.write_secret(name, v[cred], cred, tags)
+
+        bgtask.add_task(
+            HC.handler.write_file,
+            directory="binary_dumps",
+            name=upload_file.filename,
+            file=lsass_data,
+        )
     return {"msg": msg}
-    
+
+
 @router.post("/binparse", summary="Parses binary data for credentials")
 async def parse_bin(
+    bgtask: BackgroundTasks,
     upload_file: UploadFile = File(...),
     min_length: int = 32,
     store: bool = Depends(checkHandler),
 ):
-    results = CredParser.parse_bin(upload_file.file.read(), min_length)
+    bindata = upload_file.file.read()
+    results = CredParser.parse_bin(bindata, min_length)
+    if store:
+        bgtask.add_task(
+            HC.handler.write_file,
+            directory="binary_dumps",
+            name=upload_file.file.name,
+            file=bindata,
+        )
     return {"msg": results}

@@ -1,10 +1,10 @@
-from lootmarshal.cli.utils import verify_tags
-import typer
 from typing import List
+
+import typer
 
 from .. import LMCliSession as lmcs
 from ..loottyper import LootMarshalTyper
-from ..utils import print_cli_response
+from ..utils import print_cli_response, verify_tags
 
 secret_app = LootMarshalTyper(help="Interact with secrets")
 
@@ -14,7 +14,7 @@ def read_secret(name: str):
     """
     Gets a secret.
     """
-    resp = lmcs.request("GET", f"secret/{name}")
+    resp = lmcs.request("GET", f"secrets/{name}")
     print_cli_response(resp, value="_value")
 
 
@@ -26,18 +26,14 @@ def write_secret(
         ..., "-c", metavar="", help="Content type of the secret"
     ),
     tags: List[str] = typer.Option(
-        None,
-        "-t",
-        metavar="",
-        help="Comma-separated tag metadata",
-        callback=verify_tags,
+        {}, "-t", metavar="", help="Comma-separated tag metadata", callback=verify_tags,
     ),
 ):
     """
     Sets a secret. Tag key/value must be alphanumeric (underscores are allowed).
     """
     body = {"name": name, "value": value, "content_type": content_type, "tags": tags}
-    resp = lmcs.request("PUT", f"secret", json=body)
+    resp = lmcs.request("PUT", f"secrets/{name}", json=body)
     print_cli_response(resp)
 
 
@@ -46,5 +42,14 @@ def list_secrets():
     """
     Lists all secret.
     """
-    resp = lmcs.request("GET", f"secret")
+    resp = lmcs.request("GET", "secrets")
     print_cli_response(resp)
+
+
+@secret_app.command("search")
+def search_secrets(value: str):
+    """
+    Search secret metadata in index.
+    """
+    resp = lmcs.request("GET", f"secrets/search?value={value}")
+    print_cli_response(resp, format="json")

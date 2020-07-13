@@ -5,7 +5,7 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.x509.oid import NameOID
-from pydantic import BaseSettings, FilePath
+from pydantic import BaseSettings
 from pydantic.class_validators import validator
 from pydantic.networks import IPvAnyAddress
 from typer import confirm
@@ -18,6 +18,7 @@ class LootMarshalSettings(BaseSettings):
     ssl: bool
     ssl_keyfile: Path
     ssl_certfile: Path
+    workers: int
     handler: str
 
     @validator("port")
@@ -41,30 +42,31 @@ class LootMarshalSettings(BaseSettings):
         try:
             with open(value, "rb") as key_file:
                 private_key = serialization.load_pem_private_key(
-                    key_file.read(),
-                    password=None,
-                    backend=default_backend()
+                    key_file.read(), password=None, backend=default_backend()
                 )
         except Exception as e:
-            new_key = confirm(f"{e}\n\n[*] Keyfile not valid. Would you like to generate one?")
+            new_key = confirm(
+                f"{e}\n\n[*] Keyfile not valid. Would you like to generate one?"
+            )
             if not new_key:
                 exit()
-            
+
             from cryptography.hazmat.primitives.asymmetric import rsa
 
             key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=2048,
-            backend=default_backend())
+                public_exponent=65537, key_size=2048, backend=default_backend()
+            )
 
             with open(value, "wb") as f:
-                f.write(key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption(),
-                ))
+                f.write(
+                    key.private_bytes(
+                        encoding=serialization.Encoding.PEM,
+                        format=serialization.PrivateFormat.TraditionalOpenSSL,
+                        encryption_algorithm=serialization.NoEncryption(),
+                    )
+                )
         return value
-    
+
     @validator("ssl_certfile")
     def valid_cert(cls, value, values):
         if not values["ssl"]:
@@ -73,37 +75,45 @@ class LootMarshalSettings(BaseSettings):
         try:
             with open(value, "rb") as key_file:
                 public_key = x509.load_pem_x509_certificate(
-                    key_file.read(),
-                    backend=default_backend()
+                    key_file.read(), backend=default_backend()
                 )
         except Exception as e:
-            new_cert = confirm(f"{e}\n\n[*] Certfile not valid. Would you like to generate one?")
+            new_cert = confirm(
+                f"{e}\n\n[*] Certfile not valid. Would you like to generate one?"
+            )
             if not new_cert:
                 exit()
-            
+
             key = serialization.load_pem_private_key(
-                    open(values["ssl_keyfile"], "rb").read(),
-                    password=None,
-                    backend=default_backend()
-                )
-    
-            subject = issuer = x509.Name([
-                x509.NameAttribute(NameOID.COUNTRY_NAME, u"US"),
-                x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, u"Washington"),
-                x509.NameAttribute(NameOID.LOCALITY_NAME, u"Redmond"),
-                x509.NameAttribute(NameOID.ORGANIZATION_NAME, u"LootMarshal"),
-                x509.NameAttribute(NameOID.COMMON_NAME, u"localhost"),
-            ])
+                open(values["ssl_keyfile"], "rb").read(),
+                password=None,
+                backend=default_backend(),
+            )
+
+            subject = issuer = x509.Name(
+                [
+                    x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
+                    x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "Washington"),
+                    x509.NameAttribute(NameOID.LOCALITY_NAME, "Redmond"),
+                    x509.NameAttribute(NameOID.ORGANIZATION_NAME, "LootMarshal"),
+                    x509.NameAttribute(NameOID.COMMON_NAME, "localhost"),
+                ]
+            )
 
             basic_contraints = x509.BasicConstraints(ca=True, path_length=0)
-            cert = (x509.CertificateBuilder()
+            cert = (
+                x509.CertificateBuilder()
                 .subject_name(subject)
                 .issuer_name(issuer)
                 .public_key(key.public_key())
                 .serial_number(x509.random_serial_number())
                 .not_valid_before(datetime.datetime.utcnow())
-                .not_valid_after(datetime.datetime.utcnow() + datetime.timedelta(days=30))
-                .add_extension(x509.SubjectAlternativeName([x509.DNSName(u"localhost")]), False)
+                .not_valid_after(
+                    datetime.datetime.utcnow() + datetime.timedelta(days=30)
+                )
+                .add_extension(
+                    x509.SubjectAlternativeName([x509.DNSName("localhost")]), False
+                )
                 .add_extension(basic_contraints, False)
                 .sign(key, hashes.SHA256(), default_backend())
             )

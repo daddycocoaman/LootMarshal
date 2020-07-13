@@ -1,4 +1,5 @@
 import re
+
 from ..logging import log
 
 _CRED_FILTERS = [
@@ -19,8 +20,6 @@ class CredParser:
     @log()
     def parse_bin(data: bytes, min_length: int):
         found = []
-        strings = re.findall(
-            f"[ -~]{{{min_length},}}", data.decode("latin-1")
-        )
+        strings = re.findall(f"[ -~]{{{min_length},}}", data.decode("latin-1"))
         found = [s for s in strings for m in [CredParser.filters.search(s)] if m]
         return list(set(found))

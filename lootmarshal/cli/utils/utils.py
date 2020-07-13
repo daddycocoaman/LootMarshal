@@ -37,7 +37,8 @@ def print_cli_response(
                 output = pformat(output, indent=4)
             elif format == "list":
                 output = "\n\n".join([item for item in output])
-
+            elif format == "json":
+                output = json.dumps(output, indent=4)
             typer.secho(f"{mark}{output}\n", fg="green")
     else:
         typer.secho(f"[✗] {resp.json()['detail']}\n", fg="red")

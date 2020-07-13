@@ -45,5 +45,3 @@ nodeLanguageServer.*/**
 dev.env
 *.crt
 *.pem
-lootmarshal/settings/cert.crt
-lootmarshal/settings/server.pem
