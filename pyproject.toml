@@ -21,7 +21,7 @@ requests-toolbelt = "^0.9.1"
 click-spinner = "^0.1.10"
 azure-storage-file = "^2.1.0"
 orjson = "^3.1.2"
-cryptography = "^2.9.2"
+cryptography = "^39.0.1"
 loguru = "^0.5.1"
 pypykatz = "^0.3.12"
 
